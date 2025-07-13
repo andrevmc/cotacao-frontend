@@ -17,18 +17,18 @@ Aplicação desenvolvida em **Angular** que consome a API do backend disponível
 
 1. Clone o repositório:
 
-git clone https://github.com/andrevmc/cotacao-frontend.git
+   git clone https://github.com/andrevmc/cotacao-frontend.git
 
 2. Instale as dependências:
 
-npm install
+   npm install
 
 3. Inicie o servidor Angular:
 
-ng serve
+   ng serve
 
 4. Acesso no navegador:
 
-http://localhost:4200
+   http://localhost:4200
 
-Obs: Certifique-se de que a API backend está rodando para o app funcionar corretamente.
+   Obs: Certifique-se de que a API backend está rodando para o app funcionar corretamente.
