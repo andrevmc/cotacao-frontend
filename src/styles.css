@@ -1,0 +1,57 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Roboto, Arial, sans-serif;
+  background-color: #f5f5f5;
+}
+
+/* 12-column grid base */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -12px;
+}
+
+[class^="col-"] {
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+/* Colunas mobile-first */
+.col-12 {
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .col-md-5 {
+    flex: 0 0 41.6667%;
+    max-width: 41.6667%;
+  }
+
+  .col-md-7 {
+    flex: 0 0 58.3333%;
+    max-width: 58.3333%;
+  }
+}
+
+/* Extras */
+.form-card {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.chart-card {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.erro {
+  color: #d32f2f;
+  font-size: 14px;
+  margin-top: 8px;
+}

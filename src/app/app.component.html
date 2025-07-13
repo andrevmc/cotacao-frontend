@@ -1,0 +1,45 @@
+<div class="row">
+
+  <!-- Coluna do Formulário -->
+  <div class="col-12 col-md-5">
+    <form (ngSubmit)="consultar()" class="form-card">
+      <h2>Consulta de Ativos</h2>
+
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Selecione os Ativos</mat-label>
+        <mat-select [(ngModel)]="ativosSelecionados" name="ativos" multiple>
+          <mat-option *ngFor="let ativo of ativosDisponiveis" [value]="ativo">{{ ativo }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Data Início</mat-label>
+        <input matInput type="date" [(ngModel)]="dataInicio" name="dataInicio" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Data Fim</mat-label>
+        <input matInput type="date" [(ngModel)]="dataFim" name="dataFim" required>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit">Consultar</button>
+
+      <div *ngIf="erroValidacao" class="erro">
+        {{ erroValidacao }}
+      </div>
+    </form>
+  </div>
+
+  <!-- Coluna do Gráfico -->
+  <div class="col-12 col-md-7" *ngIf="chartData.datasets.length && chartData.labels?.length">
+    <div class="chart-card">
+      <canvas baseChart
+        [data]="chartData"
+        [type]="chartType"
+        [options]="chartOptions"
+        style="width: 100%; max-height: 500px;">
+      </canvas>
+    </div>
+  </div>
+
+</div>
