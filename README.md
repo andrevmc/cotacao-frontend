@@ -9,9 +9,9 @@ Aplicação desenvolvida em **Angular** que consome a API do backend disponível
 
 ## 🛠️ Tecnologias
 
-- Angular
+- Angular 16
 - Chart.js
-- Angular Material
+- Angular Material 16
 
 ## ▶️ Como rodar (no terminal: bash, ...)
 
