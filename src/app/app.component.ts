@@ -30,7 +30,7 @@ export class AppComponent {
             return {
               pointStyle: 'circle', // pode ser 'circle', 'rect', 'triangle', etc.
               rotation: 0,
-              backgroundColor: color // define a cor da bolinha
+              backgroundColor: color
             };
           },
           labelColor: (context) => {
@@ -53,7 +53,7 @@ export class AppComponent {
       point: {
         radius: 3,
         hoverRadius: 4,
-        backgroundColor: 'blue' // cor default se quiser fixar
+        backgroundColor: 'blue'
       }
     },
     scales: {
@@ -67,45 +67,10 @@ export class AppComponent {
 
   erroValidacao = '';
 
-
-
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {}
-
-  // consultar() {
-  //   this.erroValidacao = '';
-  //   if (!this.ativosSelecionados.length || !this.dataInicio || !this.dataFim || this.dataInicio > this.dataFim) {
-  //     this.erroValidacao = 'Preencha corretamente os campos.';
-  //     return;
-  //   }
-  //   const payload = {
-  //     ativos: this.ativosSelecionados,
-  //     dataInicio: this.dataInicio,
-  //     dataFim: this.dataFim
-  //   };
-  //   this.http.post<any>('http://localhost:3000/api/quotes', payload).subscribe(res => {
-  //     const labels = new Set<string>();
-  //     const datasets = [];
-  //     for (const ativo in res) {
-  //       if (res[ativo].error) continue;
-  //       const data = res[ativo];
-  //       data.forEach((item: any) => labels.add(item.date));
-  //       datasets.push({
-  //         label: ativo,
-  //         data: data.map((item: any) => item.close),
-  //         fill: false,
-  //         borderColor: this.getColorForSymbol(ativo),
-  //         backgroundColor: this.getColorForSymbol(ativo),
-  //         pointBackgroundColor: this.getColorForSymbol(ativo),
-  //         tension: 0.1
-  //       });
-  //     }
-  //     this.chartData = { labels: Array.from(labels), datasets };
-  //     this.cdr.detectChanges();
-  //   });
-  // }
 
   consultar() {
     this.erroValidacao = '';
