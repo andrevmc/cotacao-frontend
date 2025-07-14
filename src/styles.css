@@ -9,7 +9,7 @@ body, html {
 .row {
   display: flex;
   flex-wrap: wrap;
-  margin: 0 -12px;
+  /* margin: 0 -12px; */
 }
 
 [class^="col-"] {
@@ -25,13 +25,13 @@ body, html {
 
 @media (min-width: 768px) {
   .col-md-5 {
-    flex: 0 0 41.6667%;
-    max-width: 41.6667%;
+    flex: 0 0 30%;
+    max-width: 30%;
   }
 
   .col-md-7 {
-    flex: 0 0 58.3333%;
-    max-width: 58.3333%;
+    flex: 0 0 70%;
+    max-width: 70%;
   }
 }
 
