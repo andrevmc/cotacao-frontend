@@ -10,7 +10,9 @@ export class AppComponent {
   ativos = '';
   dataInicio = '';
   dataFim = '';
-  //for service
+  loading = false;
+  nenhumDado = false;
+
   chartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
     datasets: []
@@ -72,36 +74,94 @@ export class AppComponent {
     private cdr: ChangeDetectorRef
   ) {}
 
-consultar() {
+  // consultar() {
+  //   this.erroValidacao = '';
+  //   if (!this.ativosSelecionados.length || !this.dataInicio || !this.dataFim || this.dataInicio > this.dataFim) {
+  //     this.erroValidacao = 'Preencha corretamente os campos.';
+  //     return;
+  //   }
+  //   const payload = {
+  //     ativos: this.ativosSelecionados,
+  //     dataInicio: this.dataInicio,
+  //     dataFim: this.dataFim
+  //   };
+  //   this.http.post<any>('http://localhost:3000/api/quotes', payload).subscribe(res => {
+  //     const labels = new Set<string>();
+  //     const datasets = [];
+  //     for (const ativo in res) {
+  //       if (res[ativo].error) continue;
+  //       const data = res[ativo];
+  //       data.forEach((item: any) => labels.add(item.date));
+  //       datasets.push({
+  //         label: ativo,
+  //         data: data.map((item: any) => item.close),
+  //         fill: false,
+  //         borderColor: this.getColorForSymbol(ativo),
+  //         backgroundColor: this.getColorForSymbol(ativo),
+  //         pointBackgroundColor: this.getColorForSymbol(ativo),
+  //         tension: 0.1
+  //       });
+  //     }
+  //     this.chartData = { labels: Array.from(labels), datasets };
+  //     this.cdr.detectChanges();
+  //   });
+  // }
+
+  consultar() {
     this.erroValidacao = '';
+    this.nenhumDado = false;
+    this.loading = true;
+    this.chartData = { labels: [], datasets: [] };
+
     if (!this.ativosSelecionados.length || !this.dataInicio || !this.dataFim || this.dataInicio > this.dataFim) {
       this.erroValidacao = 'Preencha corretamente os campos.';
+      this.loading = false;
       return;
     }
+
     const payload = {
       ativos: this.ativosSelecionados,
       dataInicio: this.dataInicio,
       dataFim: this.dataFim
     };
-    this.http.post<any>('http://localhost:3000/api/quotes', payload).subscribe(res => {
-      const labels = new Set<string>();
-      const datasets = [];
-      for (const ativo in res) {
-        if (res[ativo].error) continue;
-        const data = res[ativo];
-        data.forEach((item: any) => labels.add(item.date));
-        datasets.push({
-          label: ativo,
-          data: data.map((item: any) => item.close),
-          fill: false,
-          borderColor: this.getColorForSymbol(ativo),
-          backgroundColor: this.getColorForSymbol(ativo),
-          pointBackgroundColor: this.getColorForSymbol(ativo),
-          tension: 0.1
-        });
+
+    this.http.post<any>('http://localhost:3000/api/quotes', payload).subscribe({
+      next: (res) => {
+        const labels = new Set<string>();
+        const datasets = [];
+
+        for (const ativo in res) {
+          if (res[ativo].error) continue;
+          const data = res[ativo];
+          if (!data || !data.length) continue;
+
+          data.forEach((item: any) => labels.add(item.date));
+
+          datasets.push({
+            label: ativo,
+            data: data.map((item: any) => item.close),
+            fill: false,
+            borderColor: this.getColorForSymbol(ativo),
+            backgroundColor: this.getColorForSymbol(ativo),
+            pointBackgroundColor: this.getColorForSymbol(ativo),
+            tension: 0.1
+          });
+        }
+
+        if (!datasets.length) {
+          this.nenhumDado = true;
+        }
+
+        this.chartData = { labels: Array.from(labels), datasets };
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        this.erroValidacao = 'Erro ao consultar os dados. Tente novamente.';
+      },
+      complete: () => {
+        this.loading = false;
       }
-      this.chartData = { labels: Array.from(labels), datasets };
-      this.cdr.detectChanges();
     });
   }
 

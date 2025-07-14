@@ -30,8 +30,8 @@
     </form>
   </div>
 
-  <!-- Coluna do Gráfico -->
-  <div class="col-12 col-md-7" *ngIf="chartData.datasets.length && chartData.labels?.length">
+  <!-- Gráfico -->
+  <div class="col-12 col-md-7" *ngIf="!loading && !nenhumDado && chartData.datasets.length && chartData.labels?.length">
     <div class="chart-card">
       <canvas baseChart
         [data]="chartData"
@@ -39,6 +39,21 @@
         [options]="chartOptions"
         style="width: 100%; max-height: 500px;">
       </canvas>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="col-12 col-md-7" *ngIf="loading">
+    <div class="chart-card loading">
+      <mat-spinner></mat-spinner>
+      <p>Carregando dados...</p>
+    </div>
+  </div>
+
+  <!-- Mensagem de nenhum Dado -->
+  <div class="col-12 col-md-7" *ngIf="!loading && nenhumDado">
+    <div class="chart-card" style="text-align: center; padding: 2rem;">
+      <p><strong>Nenhum dado encontrado para os critérios selecionados.</strong></p>
     </div>
   </div>
 
