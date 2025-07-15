@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -10,7 +10,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt'
 
+registerLocaleData(localePt)
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,7 +29,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     BrowserAnimationsModule,
     MatProgressSpinnerModule
   ],
-  providers: [],
+  providers: [{ provide: LOCALE_ID, useValue: 'pt-BR'}],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
