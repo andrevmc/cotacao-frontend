@@ -33,7 +33,7 @@ export class AppComponent {
           labelPointStyle: (context) => {
             const color = context.dataset.borderColor as string;
             return {
-              pointStyle: 'triangle', // pode ser 'circle', 'rect', 'triangle', etc.
+              pointStyle: 'circle',
               rotation: 0,
               backgroundColor: color
             };
@@ -126,7 +126,7 @@ export class AppComponent {
             data: data.map((item: any) => item.close),
             fill: false,
             borderColor: this.getColorForSymbol(ativo),
-            borderWidth: 2,
+            borderWidth: 1,
             backgroundColor: this.getColorForSymbol(ativo),
             pointBackgroundColor: this.getColorForSymbol(ativo),
             tension: 0.1
