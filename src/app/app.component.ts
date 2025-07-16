@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ChartConfiguration, ChartData, ChartOptions, ChartType } from 'chart.js';
+import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
+import { ptBR } from 'date-fns/locale';
 
 @Component({
   selector: 'app-root',
@@ -25,10 +26,14 @@ export class AppComponent {
     plugins: {
       tooltip: {
         callbacks: {
+          title: (items) => {
+            const date = items[0].parsed.x;
+            return new Date(date).toLocaleDateString('pt-BR');
+          },
           labelPointStyle: (context) => {
             const color = context.dataset.borderColor as string;
             return {
-              pointStyle: 'circle', // pode ser 'circle', 'rect', 'triangle', etc.
+              pointStyle: 'triangle', // pode ser 'circle', 'rect', 'triangle', etc.
               rotation: 0,
               backgroundColor: color
             };
@@ -57,7 +62,21 @@ export class AppComponent {
       }
     },
     scales: {
-      x: {},
+      x: {
+        type: 'time',
+        time: {
+          unit: 'day',
+          displayFormats: {
+            day: 'dd/MM/yyyy'
+          },
+          tooltipFormat: 'dd/MM/yyyy'
+        },
+        adapters: {
+          date: {
+            locale: ptBR
+          }
+        }
+      },
       y: {}
     }
   };
@@ -107,6 +126,7 @@ export class AppComponent {
             data: data.map((item: any) => item.close),
             fill: false,
             borderColor: this.getColorForSymbol(ativo),
+            borderWidth: 2,
             backgroundColor: this.getColorForSymbol(ativo),
             pointBackgroundColor: this.getColorForSymbol(ativo),
             tension: 0.1
