@@ -6,6 +6,7 @@ import { ptBR } from 'date-fns/locale';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   ativos = '';
@@ -119,11 +120,11 @@ export class AppComponent {
           const data = res[ativo];
           if (!data || !data.length) continue;
 
-          data.forEach((item: any) => labels.add(item.date));
+          data.forEach((item: Quote) => labels.add(item.date));
 
           datasets.push({
             label: ativo,
-            data: data.map((item: any) => item.close),
+            data: data.map((item: Quote) => item.close),
             fill: false,
             borderColor: this.getColorForSymbol(ativo),
             borderWidth: 1,
@@ -161,3 +162,5 @@ export class AppComponent {
     return colors[symbol] || colors.default;
   }
 }
+
+interface Quote { date: string; close: number }
