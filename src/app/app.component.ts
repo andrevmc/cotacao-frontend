@@ -1,5 +1,7 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
 import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 import { ptBR } from 'date-fns/locale';
 
@@ -9,12 +11,16 @@ import { ptBR } from 'date-fns/locale';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  ativos = '';
-  dataInicio = '';
-  dataFim = '';
+  assets = '';
+  startDate = '';
+  endDate = '';
   loading = false;
-  nenhumDado = false;
-
+  hasNoData = false;
+  availableAssets = ['PETR4', 'VALE3', 'ITUB4', 'BBDC4', 'BBAS3'];
+  selectedAssets: string[] = [];
+  allSelected = false;
+  validationError = '';
+  
   chartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
     datasets: []
@@ -82,32 +88,33 @@ export class AppComponent {
     }
   };
 
-  ativosDisponiveis = ['PETR4', 'VALE3', 'ITUB4', 'BBDC4', 'BBAS3'];
-  ativosSelecionados: string[] = [];
 
-  erroValidacao = '';
+
 
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {}
 
-  consultar() {
-    this.erroValidacao = '';
-    this.nenhumDado = false;
+  allValue = '__ALL__';
+
+  
+  fetchQuotes() {
+    this.validationError = '';
+    this.hasNoData = false;
     this.loading = true;
     this.chartData = { labels: [], datasets: [] };
 
-    if (!this.ativosSelecionados.length || !this.dataInicio || !this.dataFim || this.dataInicio > this.dataFim) {
-      this.erroValidacao = 'Preencha corretamente os campos.';
+    if (!this.selectedAssets.length || !this.startDate  || !this.endDate || this.startDate  > this.endDate) {
+      this.validationError = 'Preencha corretamente os campos.';
       this.loading = false;
       return;
     }
 
     const payload = {
-      ativos: this.ativosSelecionados,
-      dataInicio: this.dataInicio,
-      dataFim: this.dataFim
+      ativos: this.selectedAssets,
+      dataInicio: this.startDate ,
+      dataFim: this.endDate
     };
 
     this.http.post<any>('http://localhost:3000/api/quotes', payload).subscribe({
@@ -115,27 +122,27 @@ export class AppComponent {
         const labels = new Set<string>();
         const datasets = [];
 
-        for (const ativo in res) {
-          if (res[ativo].error) continue;
-          const data = res[ativo];
+        for (const asset in res) {
+          if (res[asset].error) continue;
+          const data = res[asset];
           if (!data || !data.length) continue;
 
           data.forEach((item: Quote) => labels.add(item.date));
 
           datasets.push({
-            label: ativo,
+            label: asset,
             data: data.map((item: Quote) => item.close),
             fill: false,
-            borderColor: this.getColorForSymbol(ativo),
+            borderColor: this.getColorForSymbol(asset),
             borderWidth: 1,
-            backgroundColor: this.getColorForSymbol(ativo),
-            pointBackgroundColor: this.getColorForSymbol(ativo),
+            backgroundColor: this.getColorForSymbol(asset),
+            pointBackgroundColor: this.getColorForSymbol(asset),
             tension: 0.1
           });
         }
 
         if (!datasets.length) {
-          this.nenhumDado = true;
+          this.hasNoData = true;
         }
 
         this.chartData = { labels: Array.from(labels), datasets };
@@ -143,14 +150,35 @@ export class AppComponent {
       },
       error: (err) => {
         console.error(err);
-        this.erroValidacao = 'Erro ao consultar os dados. Tente novamente.';
+        this.validationError = 'Erro ao consultar os dados. Tente novamente.';
       },
       complete: () => {
         this.loading = false;
       }
     });
   }
-
+  
+  onSelectionChange(event: MatSelectChange) {
+    const value = event.value;
+    // Se veio o valor especial "Todos"
+    if (value.includes(this.allValue)) {
+      this.toggleAllSelection();
+    } else {
+      // Atualiza allSelected conforme o array atual
+      this.allSelected =
+        this.selectedAssets.length === this.availableAssets.length;
+    }
+  }
+  
+  private toggleAllSelection() {
+    this.allSelected = !this.allSelected;
+    if (this.allSelected) {
+      this.selectedAssets = [...this.availableAssets];
+    } else {
+      this.selectedAssets = [];
+    }
+  }
+  
   getColorForSymbol(symbol: string): string {
     const colors = {
       PETR4: '#3A7CA5',

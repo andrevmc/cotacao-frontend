@@ -1,3 +1,4 @@
-:host ::ng-deep .mat-option:first-child .mat-pseudo-checkbox {
-  display: none;
+::ng-deep mat-option:first-child .mat-pseudo-checkbox {
+  display: none !important;
+  background-color: violet !important;
 }

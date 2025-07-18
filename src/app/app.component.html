@@ -2,36 +2,52 @@
 
   <!-- Coluna do Formulário -->
   <div class="col-12 col-md-5">
-    <form (ngSubmit)="consultar()" class="form-card">
+    <form (ngSubmit)="fetchQuotes()" class="form-card">
       <h2>Consulta de Ativos</h2>
 
       <mat-form-field appearance="fill" style="width: 100%;">
         <mat-label>Selecione os Ativos</mat-label>
-        <mat-select [(ngModel)]="ativosSelecionados" name="ativos" multiple>
-          <mat-option *ngFor="let ativo of ativosDisponiveis" [value]="ativo">{{ ativo }}</mat-option>
+        <mat-select
+          multiple
+          panelClass="no-checkbox-all"
+          [(ngModel)]="selectedAssets"
+          name="ativos"
+          (selectionChange)="onSelectionChange($event)"
+        >
+          <mat-option [value]="allValue">
+            {{ allSelected ? 'Desmarcar todos' : 'Marcar todos' }}
+          </mat-option>
+          
+          <mat-option
+            *ngFor="let asset of availableAssets"
+            [value]="asset"
+          >
+            {{ asset }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
 
+
       <mat-form-field appearance="fill" style="width: 100%;">
         <mat-label>Data Início</mat-label>
-        <input matInput type="date" [(ngModel)]="dataInicio" name="dataInicio" required>
+        <input matInput type="date" [(ngModel)]="startDate" name="dataInicio" required>
       </mat-form-field>
 
       <mat-form-field appearance="fill" style="width: 100%;">
         <mat-label>Data Fim</mat-label>
-        <input matInput type="date" [(ngModel)]="dataFim" name="dataFim" required>
+        <input matInput type="date" [(ngModel)]="endDate" name="dataFim" required>
       </mat-form-field>
 
       <button mat-raised-button color="primary" type="submit">Consultar</button>
 
-      <div *ngIf="erroValidacao" class="erro">
-        {{ erroValidacao }}
+      <div *ngIf="validationError" class="erro">
+        {{ validationError }}
       </div>
     </form>
   </div>
 
   <!-- Gráfico -->
-  <div class="col-12 col-md-7" *ngIf="!loading && !nenhumDado && chartData.datasets.length && chartData.labels?.length">
+  <div class="col-12 col-md-7" *ngIf="!loading && !hasNoData && chartData.datasets.length && chartData.labels?.length">
     <div class="chart-card">
       <canvas baseChart
         [data]="chartData"
@@ -51,7 +67,7 @@
   </div>
 
   <!-- Mensagem de nenhum dado -->
-  <div class="col-12 col-md-7" *ngIf="!loading && nenhumDado">
+  <div class="col-12 col-md-7" *ngIf="!loading && hasNoData">
     <div class="chart-card" style="text-align: center; padding: 2rem;">
       <p><strong>Nenhum dado encontrado para os critérios selecionados.</strong></p>
     </div>
